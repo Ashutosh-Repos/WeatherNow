@@ -1,0 +1,42 @@
+<nav className="w-full font-sans text-slate-100 font-light h-16 flex justify-between items-center sticky top-0 pl-4 pr-4 bg-black z-10 ">
+        <img src={logo} alt="logo" className="w-20" />
+        <ul className="flex justify-between items-center list-none gap-4 text-base max-sm:hidden ">
+          <li>Today's Weather</li>
+          <li>Weather Forecast</li>
+        </ul>
+      </nav>
+      <section className="relative flex flex flex-col justify-center items-center w-full h-[55rem] pl-4 pr-4 rounded-xl bg-[url('./assets/rain1.jpg')] bg-cover bg-no-repeat bg-fixed overflow-hidden text-white  max-md:flex-col">
+        <nav className="relative top-0 max-lg:w-64 w-80 h-10 max-md:h-8 relative rounded-2xl flex justify-center items-center glass px-2">
+          <div className="flex justify-center items-center w-full">
+            <span className="grow text-sm max-lg:text-xs h-full flex justify-center items-center rounded-s-xl">
+              Today
+            </span>
+            <span className="grow text-sm max-lg:text-xs h-full flex justify-center items-center border-x">
+              Tomorrow
+            </span>
+            <span className="grow text-sm max-lg:text-xs h-full flex justify-center items-center rounded-e-lg">
+              Overmorrow
+            </span>
+          </div>
+        </nav>
+        <div className=" relative w-full h-[30rem] flex justify-center items-center max-md:flex-col ">
+          <Form />
+          <div className="relative flex justify-center items-center w-full h-full min-h-[26rem]">
+            <Card data={currentData} curr={true} />
+          </div>
+        </div>
+        <div className="relative flex items-center w-full max-w-[900px] max-lg:w-full h-[20rem] pl-4 pr-4 rounded-xl overflow-scroll gap-4 lg:gap-8">
+          <AirQuality data={currentData.current.air_quality} />
+          <OtherStats data={currentData.current} />
+          <Wind data={currentData.current} />
+        </div>
+      </section>
+
+      const PropData = {
+    co: 331.15,
+    no2: 12.765,
+    o3: 81.0,
+    so2: 3.145,
+    pm2_5: 11.285,
+    pm10: 15.355,
+  };

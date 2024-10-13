@@ -63,19 +63,19 @@ const Map = () => {
           Temperature
         </label>
       </form>
-      <div className="relative  w-full max-md:w-[90%] overflow-hidden aspect-square flex justify-center items-center rounded-xl ">
+      <div className="relative  w-full max-md:w-[90%] overflow-hidden aspect-square flex justify-center items-center rounded-4xl overflow-hidden">
         <TransformWrapper>
           <TransformComponent>
             <div
               id="over"
-              className="w-full h-full absolute z-[4] flex justify-center items-center"
+              className="w-full h-full absolute z-[4] flex justify-center items-center rounded-xl overflow-hidden"
             >
               <img
                 src={`https://tile.openweathermap.org/map/${layer}/0/0/0.png?appid=6bddb1f5dd01a3c383f5528091f7e12b`}
                 className="pointer-events-none h-full "
               />
             </div>
-            <img src={newmap} alt="test" />
+            <img src={newmap} alt="test" className="rounded-xl"/>
           </TransformComponent>
         </TransformWrapper>
       </div>

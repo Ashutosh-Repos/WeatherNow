@@ -1,10 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import loader from "./assets/loader.gif";
-import logo from "./assets/icons/logo.png";
+import menu from "./assets/icons/menu.png";
+
+import mist from "./assets/backgrounds/mist.jpg";
+import fog from "./assets/backgrounds/fog.jpg";
+
 import place from "./assets/icons/place.png";
 import plus from "./assets/icons/plus.png";
-
-import Form from "./components/Form";
 import Card from "./components/Card";
 import Wind from "./components/Wind";
 import AirQuality from "./components/AirQuality";
@@ -13,7 +15,133 @@ import searchIcon from "./assets/icons/search.png";
 import Forecast from "./components/Forecast";
 import History from "./components/History";
 import Map from "./components/Map";
+
+import clear from "./assets/backgrounds/0/1000.jpg";
+import mistnight from "./assets/backgrounds/0/1030.jpg";
+import partlycloudynight from "./assets/backgrounds/0/1003.jpg";
+import overcastnight from "./assets/backgrounds/0/1009.jpg";
+import drizzlenight from "./assets/backgrounds/0/1153.jpg";
+import lightrainnight from "./assets/backgrounds/0/1183.jpg";
+import heavyrainnight from "./assets/backgrounds/0/1195.jpg";
+import snowHeavynight from "./assets/backgrounds/1/snow.jpg";
+import snowlightnight from "./assets/backgrounds/1/snow1.jpg";
+import thundernight from "./assets/backgrounds/1/thunder.jpg";
+
+import sunny from "./assets/backgrounds/1/1000.jpg";
+import mistday from "./assets/backgrounds/1/1030.jpg";
+import partlycloudyday from "./assets/backgrounds/1/1003.jpg";
+import overcastday from "./assets/backgrounds/1/1009.jpg";
+import drizzleday from "./assets/backgrounds/1/1153.jpg";
+import lightrainday from "./assets/backgrounds/1/1183.jpg";
+import heavyrainday from "./assets/backgrounds/1/1195.jpg";
+import snowHeavyday from "./assets/backgrounds/1/snow.jpg";
+import snowlightday from "./assets/backgrounds/1/snow1.jpg";
+import thunderday from "./assets/backgrounds/1/thunder.jpg";
+
 function App() {
+  const bg = {
+    0: {
+      1000: clear,
+      1003: partlycloudynight,
+      1006: clear,
+      1009: overcastnight,
+      1030: mistnight,
+      1063: drizzlenight,
+      1066: snowlightnight,
+      1069: snowlightnight,
+      1072: snowlightnight,
+      1087: thundernight,
+      1114: snowlightnight,
+      1117: snowlightnight,
+      1135: fog,
+      1147: fog,
+      1150: clear,
+      1153: drizzlenight,
+      1168: drizzlenight,
+      1171: drizzlenight,
+      1180: drizzlenight,
+      1183: lightrainnight,
+      1186: lightrainnight,
+      1189: lightrainnight,
+      1192: heavyrainnight,
+      1195: heavyrainnight,
+      1198: lightrainnight,
+      1201: heavyrainnight,
+      1204: snowlightnight,
+      1207: snowlightnight,
+      1210: snowlightnight,
+      1213: snowlightnight,
+      1216: snowlightnight,
+      1219: snowlightnight,
+      1222: snowHeavynight,
+      1225: snowHeavynight,
+      1237: snowHeavynight,
+      1240: lightrainnight,
+      1243: lightrainnight,
+      1246: lightrainnight,
+      1249: snowlightnight,
+      1252: snowlightnight,
+      1255: snowlightnight,
+      1258: snowHeavynight,
+      1261: snowlightnight,
+      1264: snowHeavynight,
+      1273: thundernight,
+      1276: thundernight,
+      1279: thundernight,
+      1282: snowHeavynight,
+    },
+    1: {
+      1000: sunny,
+      1003: partlycloudyday,
+      1006: clear,
+      1009: overcastday,
+      1030: mistday,
+      1063: drizzleday,
+      1066: snowlightday,
+      1069: snowlightday,
+      1072: snowlightday,
+      1087: thunderday,
+      1114: snowlightday,
+      1117: snowlightday,
+      1135: fog,
+      1147: fog,
+      1150: clear,
+      1153: drizzleday,
+      1168: drizzleday,
+      1171: drizzleday,
+      1180: drizzleday,
+      1183: lightrainday,
+      1186: lightrainday,
+      1189: lightrainday,
+      1192: heavyrainday,
+      1195: heavyrainday,
+      1198: lightrainday,
+      1201: heavyrainday,
+      1204: snowlightday,
+      1207: snowlightday,
+      1210: snowlightday,
+      1213: snowlightday,
+      1216: snowlightday,
+      1219: snowlightday,
+      1222: snowHeavyday,
+      1225: snowHeavyday,
+      1237: snowHeavyday,
+      1240: lightrainday,
+      1243: lightrainday,
+      1246: lightrainday,
+      1249: snowlightday,
+      1252: snowlightday,
+      1255: snowlightday,
+      1258: snowHeavyday,
+      1261: snowlightday,
+      1264: snowHeavyday,
+      1273: thunderday,
+      1276: thunderday,
+      1279: thunderday,
+      1282: snowHeavyday,
+    },
+  };
+
   const [loading, setloading] = useState(true);
   const [error, setError] = useState(null);
   const [status, setstatus] = useState("fetching location");
@@ -23,13 +151,24 @@ function App() {
   const [saved, setsaved] = useState([]);
   const [coords, setcoords] = useState(null);
 
+  const [minDate, setMinDate] = useState("");
+  const [maxDate, setMaxDate] = useState("");
+
   const liveRef = useRef(null);
   const forecastRef = useRef(null);
   const weathermapRef = useRef(null);
+  const historyRef = useRef(null);
+
+  const currDate = new Date();
+  const onedayAgo = new Date();
+  onedayAgo.setDate(currDate.getDate() - 1);
+  const defaultDate = `${onedayAgo.getFullYear()}-${
+    onedayAgo.getMonth() + 1
+  }-${onedayAgo.getDate()}`;
 
   const scrollToSection = (Ref) => {
     window.scrollTo({
-      top: Ref.current.offsetTop-60,
+      top: Ref.current.offsetTop - 60,
       behavior: "smooth",
     });
   };
@@ -37,8 +176,20 @@ function App() {
   useEffect(() => {
     fechingdata();
     getlocalKeys();
+    chooseDate();
   }, []);
 
+  function chooseDate() {
+    const nowDate = new Date();
+    const lastDate = new Date();
+    lastDate.setDate(nowDate.getDate() - 7);
+
+    setMinDate(lastDate.toISOString().split("T")[0]);
+    setMaxDate(nowDate.toISOString().split("T")[0]);
+
+    console.log(minDate);
+    console.log(maxDate);
+  }
 
   const getIp = async () => {
     return new Promise((resolve, reject) => {
@@ -66,7 +217,7 @@ function App() {
           (pos) => {
             setstatus("loaction fetched");
             setcoords({ x: pos.coords.latitude, y: pos.coords.longitude });
-            console.log({ x: pos.coords.latitude, y: pos.coords.longitude })
+            console.log({ x: pos.coords.latitude, y: pos.coords.longitude });
             resolve({ x: pos.coords.latitude, y: pos.coords.longitude });
           },
           (error) => {
@@ -81,10 +232,12 @@ function App() {
     });
   };
 
-  const fechingdata = async (city = "") => {
+  const fechingdata = async (city = "", date = defaultDate) => {
     if (city != "") {
       await currentFetch(city);
       await forecastFetch(city);
+
+      if (date) await historyFetch(city, date);
     } else {
       try {
         const coord = await getcoord();
@@ -92,6 +245,7 @@ function App() {
           const query = `${coord.x},${coord.y}`;
           await currentFetch(query);
           await forecastFetch(query);
+          await historyFetch(query, date);
         }
       } catch {
         const ipadd = await getIp();
@@ -99,6 +253,7 @@ function App() {
           const query = ipadd;
           await currentFetch(query);
           await forecastFetch(query);
+          await historyFetch(query, date);
         } else {
           setstatus("unable to get loaction retry");
         }
@@ -131,10 +286,26 @@ function App() {
       console.log(result);
       setforecastData(result);
       setstatus("data fetched");
-      setloading(false);
     } catch (error) {
       console.log(error);
       setstatus("unable to fetch data");
+    }
+  };
+
+  const historyFetch = async (query, dt) => {
+    const url = `http://api.weatherapi.com/v1/history.json?key=67d2dd6485c540308ca65523240210&q=${query}&dt=${dt}`;
+    try {
+      setstatus("fetching History data");
+      const response = await fetch(url);
+      const result = await response.json();
+      setstatus("forecast History fetched");
+      console.log(result);
+      sethistoryData(result);
+      setstatus("data fetched");
+      setloading(false);
+    } catch (error) {
+      console.log(error);
+      setstatus("unable to History fetch data");
     }
   };
 
@@ -151,41 +322,61 @@ function App() {
     }
   };
 
-  const saveLocal = ()=>{
-    if(localStorage.length<3){
+  const fetchHis = async (date = defaultDate) => {
+    date = document.getElementById("hisdateinput").value;
+    try {
+      const coord = await getcoord();
+      if (coord != null) {
+        const query = `${coord.x},${coord.y}`;
+        await historyFetch(query, date);
+      }
+    } catch {
+      const ipadd = await getIp();
+      if (ipadd != null) {
+        const query = ipadd;
+        await historyFetch(query, date);
+      } else {
+        setstatus("unable to get loaction retry");
+        console.log(status);
+      }
+    }
+  };
+
+  const saveLocal = () => {
+    if (localStorage.length < 3) {
       const val = `${currentData.location.lat},${currentData.location.lon}`;
       const key = prompt("Enter name by which we save that location");
-      if(key != null){
-        localStorage.setItem(key,val);
+      if (key != null) {
+        localStorage.setItem(key, val);
       }
-    }else{
+    } else {
       alert("You can't save more than 3 locations");
     }
     getlocalKeys();
-  }
+  };
 
-  const getlocalKeys = ()=>{
-    console.log("local called")
-    let keys= []
-    if(localStorage !== null){
+  const getlocalKeys = () => {
+    console.log("local called");
+    let keys = [];
+    if (localStorage !== null) {
       for (let i = 0; i < localStorage.length; i++) {
         keys.push(localStorage.key(i));
       }
     }
     setsaved(keys);
-  }
+  };
 
-  const deleteLocal = (key)=>{
+  const deleteLocal = (key) => {
     localStorage.removeItem(key);
     getlocalKeys();
-  }
+  };
 
-  const fetchSaved = (key)=>{
+  const fetchSaved = (key) => {
     let q = localStorage.getItem(key);
-    console.log(typeof q)
+    console.log(typeof q);
     console.log(q);
     fechingdata(q);
-  }
+  };
 
   return (
     <>
@@ -206,25 +397,89 @@ function App() {
         <>
           <nav className="w-full font-sans text-slate-100 font-light h-16 flex justify-between items-center sticky top-0 pl-4 pr-4 bg-black z-10 ">
             <h1 className="text-center text-4xl font-extrabold">Weather Now</h1>
-            <ul className="flex justify-between h-10 items-center list-none gap-4 text-base max-sm:hidden ">
-              <li className="flex justify-between items-center border-2 px-2 h-full cursor-pointer rounded-lg" onClick={()=>{scrollToSection(liveRef)}}>Current</li>
-              <li className="flex justify-between items-center border-2 px-2 h-full cursor-pointer rounded-lg" onClick={()=>{scrollToSection(forecastRef)}}>Forecast</li>
-              <li className="flex justify-between items-center border-2 px-2 h-full cursor-pointer rounded-lg" onClick={()=>{scrollToSection(weathermapRef)}}>Weather Map</li>
+            <ul className="flex justify-between h-10 items-center list-none gap-2 text-base max-sm:hidden ">
+              <li
+                className="flex justify-between items-center  px-1 h-full cursor-pointer rounded-lg"
+                onClick={() => {
+                  scrollToSection(liveRef);
+                }}
+              >
+                Current
+              </li>
+              <li
+                className="flex justify-between items-center  px-1 h-full cursor-pointer rounded-lg"
+                onClick={() => {
+                  scrollToSection(forecastRef);
+                }}
+              >
+                Forecast
+              </li>
+              <li
+                className="flex justify-between items-center  px-1 h-full cursor-pointer rounded-lg"
+                onClick={() => {
+                  scrollToSection(weathermapRef);
+                }}
+              >
+                Weather Map
+              </li>
+              <li
+                className="flex justify-between items-center  px-1 h-full cursor-pointer rounded-lg"
+                onClick={() => {
+                  scrollToSection(historyRef);
+                }}
+              >
+                History
+              </li>
             </ul>
+            <div className="flex justify-between h-10 items-center list-none gap-2 text-base sm:hidden fixed top-4 right-4">
+              <img src={menu} alt="#" className="h-full invert" />
+            </div>
           </nav>
-          <section ref={liveRef} className="relative flex flex flex-col justify-center items-center w-full h-[55rem] pl-4 pr-4 rounded-xl bg-[url('./assets/rain1.jpg')] bg-cover bg-no-repeat bg-fixed overflow-hidden text-white  max-md:flex-col">
+          <section
+            ref={liveRef}
+            className="relative flex flex flex-col justify-center items-center w-full h-[55rem] pl-4 pr-4 rounded-xl overflow-hidden text-white  max-md:flex-col opacity-75"
+          >
+            <img
+              src={
+                bg[currentData.current.is_day][
+                  currentData.current.condition.code
+                ]
+              }
+              className="absolute w-auto h-full object-cover object-center brightness-75"
+            />
             <nav className="relative top-0 w-max h-10  relative rounded-2xl flex justify-center items-center glass px-2">
               <div className="flex justify-center items-center w-full h-full py-2">
-              <img src={place} alt="current" className="h-5 invert px-1 cursor-pointer"/>
-              {saved.map((e,index)=>
-              (
-                <span key={index} className=" relative grow text-sm max-lg:text-xs h-full flex cursor-default justify-center items-center rounded-md px-1 hover:bg-gray-300/[0.2] group" onClick={()=>{fetchSaved(e)}}>
-                  {e}
-                  <div className="absolute top-[-10px] right-0 w-4 h-4 rounded-full text-white bg-gray-300/[0.2] inline-block opacity-0 text-center text-md p-0 transition-all cursor-pointer group-hover:opacity-100" onClick={()=>{deleteLocal(e)}}>-</div>
-                </span>
-              ))}
-              <div className="w-6 h-6 rounded-full flex justify-center items-center overflow-hidden hover:bg-gray-300/[0.2] cursor-pointer ml-1">
-                <img src={plus} alt="current" className="invert py-1 px-1" onClick={saveLocal}/>
+                <img
+                  src={place}
+                  alt="current"
+                  className="h-5 invert px-1 cursor-pointer"
+                />
+                {saved.map((e, index) => (
+                  <span
+                    key={index}
+                    className=" relative grow text-sm max-lg:text-xs h-full flex cursor-default justify-center items-center rounded-md px-1 hover:bg-gray-300/[0.2] group"
+                    onClick={() => {
+                      fetchSaved(e);
+                    }}
+                  >
+                    {e}
+                    <div
+                      className="absolute top-[-10px] right-0 w-4 h-4 rounded-full text-white bg-gray-300/[0.2] inline-block opacity-0 text-center text-md p-0 transition-all cursor-pointer group-hover:opacity-100"
+                      onClick={() => {
+                        deleteLocal(e);
+                      }}
+                    >
+                      -
+                    </div>
+                  </span>
+                ))}
+                <div className="w-6 h-6 rounded-full flex justify-center items-center overflow-hidden hover:bg-gray-300/[0.2] cursor-pointer ml-1">
+                  <img
+                    src={plus}
+                    alt="current"
+                    className="invert py-1 px-1"
+                    onClick={saveLocal}
+                  />
                 </div>
               </div>
             </nav>
@@ -267,14 +522,41 @@ function App() {
               <Wind data={currentData.current} />
             </div>
           </section>
-          <section ref={forecastRef} className="relative flex flex-col justify-between items-center w-full h-[55rem] mx-4 pt-4 mt-2 pl-4 pr-4 rounded-xl bg-zinc-900 overflow-hidden text-white">
+          <section
+            ref={forecastRef}
+            className="relative flex flex-col justify-between items-center w-full h-[55rem] mx-4 pt-4 mt-2 pl-4 pr-4 rounded-xl bg-zinc-900 overflow-hidden text-white"
+          >
             <Forecast data={forecastData.forecast} />
           </section>
-          <section ref={weathermapRef} className="relative flex flex-col justify-evenly items-center w-full mx-4 pt-4 pb-4 pl-4 pr-4 rounded-xl text-white max-md:flex-col aspect-square">
-            <Map/>
+          <section
+            ref={weathermapRef}
+            className="relative flex flex-col justify-evenly items-center w-full mx-4 pt-4 pb-4 pl-4 pr-4 rounded-xl text-white max-md:flex-col aspect-square"
+          >
+            <Map />
           </section>
-          
-      
+          <section
+            className="relative flex flex-col justify-between items-center w-full h-[55rem] mx-4 pt-4 mt-2 pl-4 pr-4 rounded-xl bg-zinc-900 overflow-hidden text-white"
+            ref={historyRef}
+          >
+            <form
+              className="w-full h-10 flex justify-center items-center gap-8 max-md:gap-1 max-sm:flex-col max-sm:h-20"
+              name="historyForm"
+            >
+              <label htmlFor="fromdate">
+                <span>Select Date: </span>
+                <input
+                  className="rounded-lg glass pl-4"
+                  type="date"
+                  name="fromDate"
+                  id="hisdateinput"
+                  min={minDate}
+                  max={maxDate}
+                  onChange={fetchHis}
+                />
+              </label>
+            </form>
+            <History data={historyData.forecast} />
+          </section>
         </>
       )}
     </>

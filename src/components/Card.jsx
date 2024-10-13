@@ -36,7 +36,7 @@ function Card(props) {
       <div className=" grid grid-rows-3 grid-cols-3 place-items-center w-full h-2/5 gap-4">
         {cardData.map((e, index) => (
           <span key={index}>
-            <img className="w-8 invert" src={e.source} alt="#" />
+            <img className="w-8 invert grayscale" src={e.source} alt="#" />
             <p className="text-xs text-center">{e.val}</p>
           </span>
         ))}

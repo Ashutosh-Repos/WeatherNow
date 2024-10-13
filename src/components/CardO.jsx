@@ -32,7 +32,7 @@ function CardO(props) {
       <p>{props.data.condition.text}</p>
       <h1 className="text-7xl">{props.data.feelslike_c}°c</h1>
 
-      <h3>{props.dte.date}</h3>
+      <h3>{props.dte}</h3>
 
       <div className=" grid grid-rows-3 grid-cols-3 place-items-center w-full h-2/5 gap-4">
         {cardData.map((e, index) => (

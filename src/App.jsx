@@ -293,7 +293,7 @@ function App() {
   };
 
   const historyFetch = async (query, dt) => {
-    const url = `http://api.weatherapi.com/v1/history.json?key=67d2dd6485c540308ca65523240210&q=${query}&dt=${dt}`;
+    const url = `https://api.weatherapi.com/v1/history.json?key=67d2dd6485c540308ca65523240210&q=${query}&dt=${dt}`;
     try {
       setstatus("fetching History data");
       const response = await fetch(url);

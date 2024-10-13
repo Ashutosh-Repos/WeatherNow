@@ -262,7 +262,7 @@ function App() {
   };
 
   const currentFetch = async (query) => {
-    const url = `http://api.weatherapi.com/v1/current.json?key=67d2dd6485c540308ca65523240210&q=${query}&aqi=yes`;
+    const url = `https://api.weatherapi.com/v1/current.json?key=67d2dd6485c540308ca65523240210&q=${query}&aqi=yes`;
     try {
       setstatus("fetching current data");
       const response = await fetch(url);
@@ -277,7 +277,7 @@ function App() {
   };
 
   const forecastFetch = async (query) => {
-    const url = `http://api.weatherapi.com/v1/forecast.json?key=67d2dd6485c540308ca65523240210&q=${query}&days=3&aqi=yes&alerts=yes`;
+    const url = `https://api.weatherapi.com/v1/forecast.json?key=67d2dd6485c540308ca65523240210&q=${query}&days=3&aqi=yes&alerts=yes`;
     try {
       setstatus("fetching forecast data");
       const response = await fetch(url);

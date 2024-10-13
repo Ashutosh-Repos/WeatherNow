@@ -445,7 +445,7 @@ function App() {
                   currentData.current.condition.code
                 ]
               }
-              className="absolute w-auto h-full object-cover object-center brightness-75"
+              className="absolute h-[120%] object-cover object-center brightness-75"
             />
             <nav className="relative top-0 w-max h-10  relative rounded-2xl flex justify-center items-center glass px-2">
               <div className="flex justify-center items-center w-full h-full py-2">
@@ -453,6 +453,9 @@ function App() {
                   src={place}
                   alt="current"
                   className="h-5 invert px-1 cursor-pointer"
+                  onClick={() => {
+                    fechingdata();
+                  }}
                 />
                 {saved.map((e, index) => (
                   <span

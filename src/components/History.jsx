@@ -25,11 +25,19 @@ function History(props) {
           <CardH
             data={props.data.forecastday[0].hour[nowHours]}
             dte={props.data.forecastday[0].date}
+            wiggle={props.wiggle}
           />
         </div>
         <div className="relative flex items-center w-full h-[20rem] pl-4 pr-4 rounded-xl  gap-4  lg:gap-8">
-          <Wind data={props.data.forecastday[0].hour[nowHours]} Id="HisWind" />
-          <OtherStats data={props.data.forecastday[0].hour[nowHours]} />
+          <Wind
+            data={props.data.forecastday[0].hour[nowHours]}
+            Id="HisWind"
+            wiggle={props.wiggle}
+          />
+          <OtherStats
+            data={props.data.forecastday[0].hour[nowHours]}
+            wiggle={props.wiggle}
+          />
         </div>
       </div>
       <div className=" relative grow w-full h-64 max-w-6xl flex flex-col justify-center items-center max-md:pl-4 max-md:pr-4 pl-8 pr-8 glass rounded-xl mb-4">
@@ -44,6 +52,7 @@ function History(props) {
           id="Historyscroller"
           data={props.data.forecastday[0].hour}
           nowPoint={nowHours}
+          wiggle={props.wiggle}
         />
         <img
           src={rightArw}

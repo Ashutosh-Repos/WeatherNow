@@ -1,4 +1,5 @@
 import weatherStatusIcon from "../assets/icons/weather_status.png";
+import precipitationIcon from "../assets/icons/precipitation.png";
 function Slider(props) {
   //   function wheelScroll() {
   //     let scrollElement = document.getElementById("scroller");
@@ -19,40 +20,49 @@ function Slider(props) {
   //       scrollContainer.scrollLeft += event.deltaY;
   //     }
   //   };
-  const now = "h-full  w-40 min-w-40 flex justify-center items-center rounded-xl bg-gray-300/[0.05]";
-  const notnow = "h-full w-40 min-w-40 flex justify-center items-center rounded-xl";
+  const cl1 =
+    "w-full h-64 overflow-x-scroll relative flex items-center scroll-smooth wiggle";
+  const cl2 =
+    "w-full h-64 overflow-x-scroll relative flex items-center scroll-smooth";
+  const now =
+    "h-full  w-40 min-w-40 flex justify-center items-center rounded-xl bg-gray-300/[0.05]";
+  const notnow =
+    "h-full w-40 min-w-40 flex justify-center items-center rounded-xl";
   return (
     <div
-      className="w-full h-64 overflow-x-scroll relative flex items-center scroll-smooth"
+      className={props.wiggle == true ? cl1 : cl2}
       id={props.id}
       //   onWheel={wheelScroll}
     >
-      {props.data.map((e,i) => (
-        <div className={props.nowPoint == i ? now:notnow} key={i}>
-          <div
-            className="h-full w-40 min-w-40 flex flex-col justify-center items-center rounded-2xl overflow-x-hidden mx-2.5"
-            
-          >
+      {props.data.map((e, i) => (
+        <div className={props.nowPoint == i ? now : notnow} key={i}>
+          <div className="h-full w-40 min-w-40 flex flex-col justify-center items-center rounded-2xl overflow-x-hidden mx-2.5">
             <div className="w-full h-3/5 border-b flex flex-col justify-center items-center">
-              <img
-                src={e.condition.icon}
-                alt="#"
-                className="h-16 w-16"
-              />
+              <img src={e.condition.icon} alt="#" className="h-16 w-16" />
               <h3 className="text-xl">{e.feelslike_c}°c</h3>
-              <h3 className="text-sm text-center font-semibold">{e.condition.text}</h3>
+              <h3 className="text-sm text-center font-semibold">
+                {e.condition.text}
+              </h3>
             </div>
             <div className="w-full h-2/5 flex flex-col justify-center items-center">
               <span className="flex flex-row justify-center items-center w-full">
-                <p className="w-full text-center text-base">
+                <p className="w-full text-center text-base flex justify-end items-center gap-1 pr-1">
                   {e.chance_of_rain}%
+                  <img
+                    src={precipitationIcon}
+                    alt="#"
+                    className="w-5 h-5 grayscale"
+                  />
                 </p>
                 <p className="w-full text-center text-base border-l">
-                  {e.wind_kph}Kph
+                  {e.wind_kph} km/h
                 </p>
-              </span>{
-                props.nowPoint == i ? <h2 className="text-2xl">Now</h2>:<h2 className="text-2xl">{i < 10 ? `0${i}` : i}:00</h2>
-              }
+              </span>
+              {props.nowPoint == i ? (
+                <h2 className="text-2xl">Now</h2>
+              ) : (
+                <h2 className="text-2xl">{i < 10 ? `0${i}` : i}:00</h2>
+              )}
             </div>
           </div>
         </div>

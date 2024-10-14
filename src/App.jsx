@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import loader from "./assets/loader.gif";
 import menu from "./assets/icons/menu.png";
+import logo from "./assets/icons/weathernowlogo.png";
 
-import mist from "./assets/backgrounds/mist.jpg";
 import fog from "./assets/backgrounds/fog.jpg";
 
 import place from "./assets/icons/place.png";
@@ -15,6 +15,7 @@ import searchIcon from "./assets/icons/search.png";
 import Forecast from "./components/Forecast";
 import History from "./components/History";
 import Map from "./components/Map";
+import Footer from "./components/Footer";
 
 import clear from "./assets/backgrounds/0/1000.jpg";
 import mistnight from "./assets/backgrounds/0/1030.jpg";
@@ -150,14 +151,15 @@ function App() {
   const [historyData, sethistoryData] = useState(null);
   const [saved, setsaved] = useState([]);
   const [coords, setcoords] = useState(null);
-
+  const [wiggle, setwiggle] = useState(false);
+  const [currQuery, setcurrQuery] = useState("");
   const [minDate, setMinDate] = useState("");
   const [maxDate, setMaxDate] = useState("");
 
-  const liveRef = useRef(null);
-  const forecastRef = useRef(null);
-  const weathermapRef = useRef(null);
-  const historyRef = useRef(null);
+  const liveRef = useRef(0);
+  const forecastRef = useRef(0);
+  const weathermapRef = useRef(0);
+  const historyRef = useRef(0);
 
   const currDate = new Date();
   const onedayAgo = new Date();
@@ -168,10 +170,52 @@ function App() {
 
   const scrollToSection = (Ref) => {
     window.scrollTo({
-      top: Ref.current.offsetTop - 60,
+      top: Ref.current.offsetTop - 80,
       behavior: "smooth",
     });
+    console.log(Ref.current.offsetTop);
   };
+
+  window.addEventListener("scroll", () => {
+    if (
+      window.scrollY >= liveRef.current.offsetTop - 80 &&
+      window.scrollY <= forecastRef.current.offsetTop - 80
+    ) {
+      document.getElementById("span1").style.width = `75%`;
+      document.getElementById("span1").style.transition = `200ms`;
+      document.getElementById("span2").style.width = `0%`;
+      document.getElementById("span3").style.width = `0%`;
+      document.getElementById("span4").style.width = `0%`;
+    }
+
+    if (
+      window.scrollY >= forecastRef.current.offsetTop - 80 &&
+      window.scrollY <= weathermapRef.current.offsetTop - 80
+    ) {
+      document.getElementById("span1").style.width = `0%`;
+      document.getElementById("span2").style.width = `75%`;
+      document.getElementById("span2").style.transition = `200ms`;
+      document.getElementById("span3").style.width = `0%`;
+      document.getElementById("span4").style.width = `0%`;
+    }
+    if (
+      window.scrollY >= weathermapRef.current.offsetTop - 80 &&
+      window.scrollY <= historyRef.current.offsetTop - 80
+    ) {
+      document.getElementById("span1").style.width = `0%`;
+      document.getElementById("span2").style.width = `0%`;
+      document.getElementById("span3").style.width = `75%`;
+      document.getElementById("span3").style.transition = `200ms`;
+      document.getElementById("span4").style.width = `0%`;
+    }
+    if (window.scrollY >= historyRef.current.offsetTop - 80) {
+      document.getElementById("span1").style.width = `0%`;
+      document.getElementById("span2").style.width = `0%`;
+      document.getElementById("span3").style.width = `0%`;
+      document.getElementById("span4").style.width = `75%`;
+      document.getElementById("span4").style.transition = `200ms`;
+    }
+  });
 
   useEffect(() => {
     fechingdata();
@@ -196,13 +240,14 @@ function App() {
       try {
         setstatus("fetching IP");
         const response = fetch("https://api.ipify.org?format=json")
-          .then((reponse) => reponse.json())
+          .then((response) => response.json())
           .then((result) => {
             // const ipd = result.ip;
             setstatus("IP fetched");
             console.log(result.ip);
             resolve(result.ip);
           });
+        console.log("IP called");
       } catch (error) {
         setstatus("unable to get IP");
         reject(null);
@@ -233,16 +278,18 @@ function App() {
   };
 
   const fechingdata = async (city = "", date = defaultDate) => {
+    setwiggle(true);
     if (city != "") {
+      setcurrQuery(city);
       await currentFetch(city);
       await forecastFetch(city);
-
       if (date) await historyFetch(city, date);
     } else {
       try {
         const coord = await getcoord();
         if (coord != null) {
           const query = `${coord.x},${coord.y}`;
+          setcurrQuery(query);
           await currentFetch(query);
           await forecastFetch(query);
           await historyFetch(query, date);
@@ -251,10 +298,12 @@ function App() {
         const ipadd = await getIp();
         if (ipadd != null) {
           const query = ipadd;
+          setcurrQuery(query);
           await currentFetch(query);
           await forecastFetch(query);
           await historyFetch(query, date);
         } else {
+          setwiggle(false);
           setstatus("unable to get loaction retry");
         }
       }
@@ -265,12 +314,15 @@ function App() {
     const url = `https://api.weatherapi.com/v1/current.json?key=67d2dd6485c540308ca65523240210&q=${query}&aqi=yes`;
     try {
       setstatus("fetching current data");
+      setwiggle(true);
       const response = await fetch(url);
       const result = await response.json();
       setstatus("current data fetched");
       console.log(result);
       setcurrentData(result);
+      setwiggle(false);
     } catch (error) {
+      setwiggle(false);
       console.log(error);
       setstatus("unable to fetch data");
     }
@@ -279,6 +331,7 @@ function App() {
   const forecastFetch = async (query) => {
     const url = `https://api.weatherapi.com/v1/forecast.json?key=67d2dd6485c540308ca65523240210&q=${query}&days=3&aqi=yes&alerts=yes`;
     try {
+      setwiggle(true);
       setstatus("fetching forecast data");
       const response = await fetch(url);
       const result = await response.json();
@@ -286,7 +339,9 @@ function App() {
       console.log(result);
       setforecastData(result);
       setstatus("data fetched");
+      setwiggle(false);
     } catch (error) {
+      setwiggle(false);
       console.log(error);
       setstatus("unable to fetch data");
     }
@@ -295,6 +350,7 @@ function App() {
   const historyFetch = async (query, dt) => {
     const url = `https://api.weatherapi.com/v1/history.json?key=67d2dd6485c540308ca65523240210&q=${query}&dt=${dt}`;
     try {
+      setwiggle(true);
       setstatus("fetching History data");
       const response = await fetch(url);
       const result = await response.json();
@@ -302,8 +358,10 @@ function App() {
       console.log(result);
       sethistoryData(result);
       setstatus("data fetched");
+      setwiggle(false);
       setloading(false);
     } catch (error) {
+      setwiggle(false);
       console.log(error);
       setstatus("unable to History fetch data");
     }
@@ -322,23 +380,34 @@ function App() {
     }
   };
 
+  // const fetchHis = async (date = defaultDate) => {
+  //   date = document.getElementById("hisdateinput").value;
+  //   try {
+  //     const coord = await getcoord();
+  //     if (coord != null) {
+  //       const query = `${coord.x},${coord.y}`;
+  //       await historyFetch(query, date);
+  //     }
+  //   } catch {
+  //     const ipadd = await getIp();
+  //     if (ipadd != null) {
+  //       const query = ipadd;
+  //       await historyFetch(query, date);
+  //     } else {
+  //       setstatus("unable to get loaction retry");
+  //       console.log(status);
+  //     }
+  //   }
+  // };
   const fetchHis = async (date = defaultDate) => {
     date = document.getElementById("hisdateinput").value;
     try {
-      const coord = await getcoord();
-      if (coord != null) {
-        const query = `${coord.x},${coord.y}`;
-        await historyFetch(query, date);
-      }
+      console.log(currQuery);
+      console.log(date);
+      await historyFetch(currQuery, date);
     } catch {
-      const ipadd = await getIp();
-      if (ipadd != null) {
-        const query = ipadd;
-        await historyFetch(query, date);
-      } else {
-        setstatus("unable to get loaction retry");
-        console.log(status);
-      }
+      setstatus("Unable to fetch history for this date");
+      console.log("Unable to fetch history for this date");
     }
   };
 
@@ -395,45 +464,84 @@ function App() {
         </div>
       ) : (
         <>
-          <nav className="w-full font-sans text-slate-100 font-light h-16 flex justify-between items-center sticky top-0 pl-4 pr-4 bg-black z-10 ">
-            <h1 className="text-center text-4xl font-extrabold">Weather Now</h1>
-            <ul className="flex justify-between h-10 items-center list-none gap-2 text-base max-sm:hidden ">
+          <nav className="w-full font-sans text-slate-100 font-light h-14 flex justify-between items-center sticky top-0 pl-4 pr-4 bg-black z-10 ">
+            <div className="h-full flex items-center justify-center gap-2 max-sm:w-full">
+              <img src={logo} alt="#" className="h-8 invert max-sm:h-10" />
+              <h1 className="text-center text-3xl font-extrabold max-md:text-2xl">
+                Weather Now
+              </h1>
+            </div>
+
+            <ul className="flex justify-between h-10 items-center list-none gap-2 text-sm max-sm:hidden ">
               <li
-                className="flex justify-between items-center  px-1 h-full cursor-pointer rounded-lg"
+                className="relative flex justify-center items-center duration-500 transition-all px-1 h-full cursor-pointer rounded-lg"
                 onClick={() => {
+                  document.getElementById("span1").style.width = `75%`;
+                  document.getElementById("span1").style.transition = `200ms`;
+                  document.getElementById("span2").style.width = `0%`;
+                  document.getElementById("span3").style.width = `0%`;
+                  document.getElementById("span4").style.width = `0%`;
                   scrollToSection(liveRef);
                 }}
               >
                 Current
+                <span
+                  className=" w-9/12 rounded h-0.5 bg-white absolute bottom-1"
+                  id="span1"
+                ></span>
               </li>
               <li
-                className="flex justify-between items-center  px-1 h-full cursor-pointer rounded-lg"
+                className="relative flex justify-center items-center transition-all px-1 h-full cursor-pointer rounded-lg"
                 onClick={() => {
+                  document.getElementById("span1").style.width = `0%`;
+                  document.getElementById("span2").style.width = `75%`;
+                  document.getElementById("span2").style.transition = `200ms`;
+                  document.getElementById("span3").style.width = `0%`;
+                  document.getElementById("span4").style.width = `0%`;
                   scrollToSection(forecastRef);
                 }}
               >
                 Forecast
+                <span
+                  className=" w-0 rounded h-0.5 bg-white absolute bottom-1"
+                  id="span2"
+                ></span>
               </li>
               <li
-                className="flex justify-between items-center  px-1 h-full cursor-pointer rounded-lg"
+                className="relative flex justify-center items-center transition-all px-1 h-full cursor-pointer rounded-lg"
                 onClick={() => {
                   scrollToSection(weathermapRef);
+                  document.getElementById("span1").style.width = `0%`;
+                  document.getElementById("span2").style.width = `0%`;
+                  document.getElementById("span3").style.width = `75%`;
+                  document.getElementById("span3").style.transition = `200ms`;
+                  document.getElementById("span4").style.width = `0%`;
                 }}
               >
                 Weather Map
+                <span
+                  className=" w-0 rounded h-0.5 bg-white absolute bottom-1"
+                  id="span3"
+                ></span>
               </li>
               <li
-                className="flex justify-between items-center  px-1 h-full cursor-pointer rounded-lg"
+                className="relative flex justify-center items-center transition-all px-1 h-full cursor-pointer rounded-lg"
                 onClick={() => {
                   scrollToSection(historyRef);
+                  document.getElementById("span1").style.width = `0%`;
+                  document.getElementById("span2").style.width = `0%`;
+                  document.getElementById("span3").style.width = `0%`;
+                  document.getElementById("span4").style.width = `75%`;
+                  document.getElementById("span4").style.transition = `200ms`;
                 }}
               >
                 History
+                <span
+                  className=" w-0 rounded h-0.5 bg-white absolute bottom-1"
+                  id="span4"
+                ></span>
               </li>
             </ul>
-            <div className="flex justify-between h-10 items-center list-none gap-2 text-base sm:hidden fixed top-4 right-4">
-              <img src={menu} alt="#" className="h-full invert" />
-            </div>
           </nav>
           <section
             ref={liveRef}
@@ -504,32 +612,35 @@ function App() {
                 <div className="max-md:w-64 h-12 mt-2 pl-2 max-w-sm relative">
                   <input
                     type="text"
-                    className=" w-full h-full rounded-3xl pl-5 pr-10 text-base glass"
+                    className=" w-full h-full rounded-3xl pl-5 pr-10 text-base glass outline-0"
                     placeholder="Search for loaction"
                     id="cityinput"
                   />
                   <img
                     src={searchIcon}
-                    className="h-8 absolute top-1 right-2 invert border-0"
+                    className="h-8 absolute top-1.5 right-2 invert border-0"
                     onClick={fetchByInput}
                   />
                 </div>
               </form>
               <div className="relative flex justify-center items-center w-full h-full min-h-[26rem]">
-                <Card data={currentData} curr={true} />
+                <Card data={currentData} curr={true} wiggle={wiggle} />
               </div>
             </div>
             <div className="relative flex items-center w-full max-w-[900px] max-lg:w-full h-[20rem] pl-4 pr-4 rounded-xl overflow-scroll gap-4 lg:gap-8">
-              <AirQuality data={currentData.current.air_quality} />
-              <OtherStats data={currentData.current} />
-              <Wind data={currentData.current} />
+              <AirQuality
+                data={currentData.current.air_quality}
+                wiggle={wiggle}
+              />
+              <OtherStats data={currentData.current} wiggle={wiggle} />
+              <Wind data={currentData.current} wiggle={wiggle} />
             </div>
           </section>
           <section
             ref={forecastRef}
             className="relative flex flex-col justify-between items-center w-full h-[55rem] mx-4 pt-4 mt-2 pl-4 pr-4 rounded-xl bg-zinc-900 overflow-hidden text-white"
           >
-            <Forecast data={forecastData.forecast} />
+            <Forecast data={forecastData.forecast} wiggle={wiggle} />
           </section>
           <section
             ref={weathermapRef}
@@ -558,8 +669,9 @@ function App() {
                 />
               </label>
             </form>
-            <History data={historyData.forecast} />
+            <History data={historyData.forecast} wiggle={wiggle} />
           </section>
+          <Footer />
         </>
       )}
     </>

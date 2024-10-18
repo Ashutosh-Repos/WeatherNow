@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import loader from "./assets/loader.gif";
-import menu from "./assets/icons/menu.png";
 import logo from "./assets/icons/weathernowlogo.png";
 
 import fog from "./assets/backgrounds/fog.jpg";
@@ -380,25 +379,6 @@ function App() {
     }
   };
 
-  // const fetchHis = async (date = defaultDate) => {
-  //   date = document.getElementById("hisdateinput").value;
-  //   try {
-  //     const coord = await getcoord();
-  //     if (coord != null) {
-  //       const query = `${coord.x},${coord.y}`;
-  //       await historyFetch(query, date);
-  //     }
-  //   } catch {
-  //     const ipadd = await getIp();
-  //     if (ipadd != null) {
-  //       const query = ipadd;
-  //       await historyFetch(query, date);
-  //     } else {
-  //       setstatus("unable to get loaction retry");
-  //       console.log(status);
-  //     }
-  //   }
-  // };
   const fetchHis = async (date = defaultDate) => {
     date = document.getElementById("hisdateinput").value;
     try {
@@ -640,7 +620,7 @@ function App() {
             ref={forecastRef}
             className="relative flex flex-col justify-between items-center w-full h-[55rem] mx-4 pt-4 mt-2 pl-4 pr-4 rounded-xl bg-zinc-900 overflow-hidden text-white"
           >
-            <Forecast data={forecastData.forecast} wiggle={wiggle} />
+            <Forecast data={forecastData} wiggle={wiggle} />
           </section>
           <section
             ref={weathermapRef}

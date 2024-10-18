@@ -1,5 +1,6 @@
 function AirQuality(props) {
   const Data = Object.entries(props.data);
+
   const airData = [
     ["C0", Data[0][1] + " μg/m³"],
     ["NO₂", Data[1][1] + " μg/m³"],

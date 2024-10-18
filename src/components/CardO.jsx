@@ -1,5 +1,3 @@
-import weatherStatusIcon from "../assets/icons/weather_status.png";
-
 //importing icons......................
 import windIcon from "../assets/icons/windy.png";
 import humidityIcon from "../assets/icons/humidity.png";
@@ -9,7 +7,7 @@ import pressureIcon from "../assets/icons/pressure.png";
 import uv_raysIcon from "../assets/icons/rays.png";
 import visibilityIcon from "../assets/icons/visibility.png";
 function CardO(props) {
-  const Data = Object.entries(props.data.air_quality);
+  const Data = Object.entries(props.wdata.air_quality);
   const cardData = [
     { source: windIcon, val: props.data.wind_kph + " kmph" },
     { source: humidityIcon, val: props.data.humidity },

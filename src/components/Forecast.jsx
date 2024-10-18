@@ -6,35 +6,33 @@ import Wind from "./Wind";
 import AirQuality from "./AirQuality";
 import OtherStats from "./OtherStats";
 import { useEffect, useState } from "react";
-import { data } from "autoprefixer";
 function Forecast(props) {
-  const [active, setactive] = useState(props.data.forecastday[0]);
+  const [active, setactive] = useState(props.data.forecast.forecastday[0]);
   const [one, setOne] = useState(true);
   const [two, setTwo] = useState(false);
   const [three, setThree] = useState(false);
-  // const [Data, setData] = useState(props.data.forecast.forecastday[0]);
 
   useEffect(() => {
-    setactive(props.data.forecastday[0]);
+    setactive(props.data.forecast.forecastday[0]);
   }, [props.data]);
 
   const nowDate = new Date();
   const nowHours = nowDate.getHours();
 
   const changeOne = () => {
-    setactive(props.data.forecastday[0]);
+    setactive(props.data.forecast.forecastday[0]);
     setOne(true);
     setTwo(false);
     setThree(false);
   };
   const changeTwo = () => {
-    setactive(props.data.forecastday[1]);
+    setactive(props.data.forecast.forecastday[1]);
     setOne(false);
     setTwo(true);
     setThree(false);
   };
   const changeThree = () => {
-    setactive(props.data.forecastday[2]);
+    setactive(props.data.forecast.forecastday[2]);
     setOne(false);
     setTwo(false);
     setThree(true);
@@ -94,11 +92,12 @@ function Forecast(props) {
             data={active.hour[nowHours]}
             dte={active.date}
             wiggle={props.wiggle}
+            wdata={props.data.current}
           />
         </div>
         <div className="relative flex items-center w-full h-[20rem] pl-4 pr-4 rounded-xl  gap-4  lg:gap-8">
           <AirQuality
-            data={active.hour[nowHours].air_quality}
+            data={props.data.current.air_quality}
             wiggle={props.wiggle}
           />
           <Wind

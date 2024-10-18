@@ -55,7 +55,7 @@ function Footer() {
                 alt={e.val}
                 className="h-full grayscale invert cursor-pointer"
               />
-              <span className="flex h-4 bg-white absolute top-[-20px] bg-transparent text-[0.4rem] text-center opacity-0 group-hover:opacity-100 duration-500">
+              <span className="flex h-4 absolute top-[-20px] bg-transparent text-[0.4rem] text-center opacity-0 group-hover:opacity-100 duration-500">
                 {e.val}
               </span>
             </a>

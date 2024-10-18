@@ -1,24 +1,11 @@
-import weatherStatusIcon from "../assets/icons/weather_status.png";
-
 //importing icons......................
 import windIcon from "../assets/icons/windy.png";
 import humidityIcon from "../assets/icons/humidity.png";
 import airQualityIcon from "../assets/icons/air_pollution.png";
-import precipitationIcon from "../assets/icons/precipitation.png";
 import pressureIcon from "../assets/icons/pressure.png";
 import uv_raysIcon from "../assets/icons/rays.png";
 import visibilityIcon from "../assets/icons/visibility.png";
-import { useEffect } from "react";
 function Card(props) {
-  // const cardData = [
-  //   { source: windIcon, val: props.data.wind_kph },
-  //   { source: humidityIcon, val: props.data.humidity },
-  //   { source: pressureIcon, val: props.data.pressure_in },
-  //   { source: visibilityIcon, val: props.data.vis_km },
-  //   { source: airQualityIcon, val: props.data.air_quality.us - epa - index },
-  //   { source: uv_raysIcon, val: props.data.uv },
-  // ];
-
   const Data = Object.entries(props.data.current.air_quality);
   const cardData = [
     { source: windIcon, val: props.data.current.wind_kph + " kmph" },

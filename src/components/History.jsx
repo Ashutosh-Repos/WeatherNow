@@ -4,7 +4,6 @@ import rightArw from "../assets/icons/right-arrow.png";
 import Wind from "./Wind";
 import OtherStats from "./OtherStats";
 import CardH from "./CardH";
-import { useState, useEffect } from "react";
 function History(props) {
   const nowDate = new Date();
   const nowHours = nowDate.getHours();

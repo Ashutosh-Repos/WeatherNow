@@ -15,10 +15,10 @@ function Wind(props) {
             W
           </p>
           <p className="absolute h-max w-max text-xs text-center p-0 font-semibold bottom-0">
-            E
+            S
           </p>
           <p className="absolute h-max w-max text-xs text-center p-0 font-semibold right-0 pr-1.5">
-            S
+            E
           </p>
           <img
             src={arrow}
